@@ -1,0 +1,24 @@
+{
+  "type": "module",
+  "name": "gym-track-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js --debug"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "knex": "^3.1.0",
+    "pg": "^8.13.1",
+    "pg-promise": "^11.10.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
