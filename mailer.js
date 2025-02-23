@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import logger from "./config/logger.js";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -10,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendPasswordResetEmail = async (email, resetLink) => {
   if (!email || !resetLink) {
-    console.error("Error: Missing email or reset link");
+    logger.error("Error: Missing email or reset link", 400);
     return;
   }
 
@@ -23,8 +24,8 @@ export const sendPasswordResetEmail = async (email, resetLink) => {
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Password reset email sent:", info.response);
+    await transporter.sendMail(mailOptions);
+    logger.info(`Password reset email sent -- ${email}`);
   } catch (error) {
     console.error("Error sending email:", error);
   }
