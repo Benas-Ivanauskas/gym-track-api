@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import exporess from "express";
 import usersRouter from "./routes/users.js";
 import errorHandler from "./middlewares/errorHandler.js";

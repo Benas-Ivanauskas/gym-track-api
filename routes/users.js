@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  createUser,
+  registerUser,
   forgotPassword,
   getResetLink,
   loginUser,
@@ -10,7 +10,7 @@ import { validateUserInput } from "../middlewares/userAuth.js";
 
 const router = Router();
 
-router.post("/register", validateUserInput, createUser);
+router.post("/register", validateUserInput, registerUser);
 
 router.post("/login", loginUser);
 

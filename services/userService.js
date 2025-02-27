@@ -1,39 +1,25 @@
-import { knex, db } from "../models/database.js";
+import prisma from "../prisma/prismaClient.js";
 
 export const getUserByEmail = (email) => {
-  return db.oneOrNone(
-    knex("users").select("*").andWhere({ email: email }).limit(1).toQuery()
-  );
+  return prisma.users.findUnique({
+    where: { email },
+  });
 };
 
-export const insertUser = (id, name, email, hashPassword, currentDate) => {
-  return db.none(
-    knex("users")
-      .insert({
-        id: id,
-        name: name,
-        email: email,
-        password: hashPassword,
-        created_at: currentDate,
-        updated_at: currentDate,
-      })
-      .toQuery()
-  );
+export const createUser = async (name, email, password) => {
+  return prisma.users.create({
+    data: { name, email, password },
+  });
 };
 
-export const updateUserPassword = (
-  id,
-  email,
-  hashPassword,
-  currentTimeStamp
-) => {
-  return db.none(
-    knex("users")
-      .andWhere({ id: id, email: email })
-      .update({
-        password: hashPassword,
-        updated_at: currentTimeStamp,
-      })
-      .toQuery()
-  );
+export const updateUserPassword = (id, email, password) => {
+  return prisma.users.update({
+    where: {
+      id,
+      email,
+    },
+    data: {
+      password,
+    },
+  });
 };

@@ -1,7 +1,5 @@
-import { v4 as uuidv4 } from "uuid";
 import {
   comparePassword,
-  currentDate,
   hashedPassword,
   isPassStrong,
   signToken,
@@ -9,7 +7,7 @@ import {
 } from "../utils/helpers.js";
 import {
   getUserByEmail,
-  insertUser,
+  createUser,
   updateUserPassword,
 } from "../services/userService.js";
 import ErrorHandler from "../errors/error.js";
@@ -17,9 +15,9 @@ import { sendPasswordResetEmail } from "../mailer.js";
 import redis from "../models/redis.js";
 import logger from "../config/logger.js";
 
-export const createUser = async (req, res, next) => {
+export const registerUser = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { id, name, email, password } = req.body;
 
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
@@ -29,12 +27,9 @@ export const createUser = async (req, res, next) => {
         "Email already exists. Please provide other email"
       );
     }
-    const id = uuidv4();
     const hashPassword = await hashedPassword(password);
     const token = signToken(email, id, "1h");
-    const currentTimeStamp = currentDate();
-
-    await insertUser(id, name, email, hashPassword, currentTimeStamp);
+    const newUser = await createUser(name, email, hashPassword);
 
     res.status(201).json({
       message: "User was created successfully!",
@@ -43,11 +38,7 @@ export const createUser = async (req, res, next) => {
 
     logger.success(
       `User was Successfully created. User:${JSON.stringify({
-        id,
-        name,
-        email,
-        password: hashPassword,
-        timestamp: currentTimeStamp,
+        newUser,
       })}`
     );
   } catch (err) {
@@ -173,15 +164,14 @@ export const resetPassword = async (req, res, next) => {
     }
 
     const hashPassword = await hashedPassword(password);
-    const currentTimeStamp = currentDate();
-    await updateUserPassword(id, email, hashPassword, currentTimeStamp);
+    await updateUserPassword(id, email, hashPassword);
 
     await redis.del(`reset_password_token_${id}`);
 
     res.status(200).json({
       message: `User with ${email} was successfully updated password`,
     });
-    logger.success(`User with ${email} was successfully updated password`);
+    logger.success(`User ${email} was successfully updated password`);
   } catch (err) {
     next(err);
   }
