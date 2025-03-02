@@ -4,7 +4,7 @@ import {
   isPassStrong,
   signToken,
   verifyToken,
-} from "../utils/helpers.js";
+} from "../utils/userHelpers.js";
 import {
   getUserByEmail,
   createUser,

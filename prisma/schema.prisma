@@ -14,10 +14,38 @@ datasource db {
 }
 
 model Users {
-  id String @id @default(uuid()) @unique
-  name String 
-  email String @unique
-  password String
+  id        String    @id @default(uuid()) 
+  name      String 
+  email     String    @unique
+  password  String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  workout   Workout[]
+}
+
+model Workout {
+  id           Int            @id @default(autoincrement()) 
+  categoryName  String
+  exerciseName String
+  sets Json
+  userId       String
+  user         Users          @relation(fields: [userId], references: [id])
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt 
+}
+
+
+model Category {
+  id         Int         @id @default(autoincrement()) 
+  name       String      @unique
+  imageUrl   String
+  exercises  Exercise[]
+}
+
+model Exercise {
+  id          Int         @id @default(autoincrement()) 
+  name        String
+  categoryId  Int
+  imageUrl    String
+  category    Category    @relation(fields: [categoryId], references: [id])
 }
