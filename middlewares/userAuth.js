@@ -1,6 +1,6 @@
 import validator from "validator";
 import ErrorHandler from "../errors/error.js";
-import { verifyToken } from "../utils/helpers.js";
+import { verifyToken } from "../utils/userHelpers.js";
 import logger from "../config/logger.js";
 
 export const validateUserInput = (req, res, next) => {
@@ -35,7 +35,6 @@ export const validateUserInput = (req, res, next) => {
 
 export const authenticateUser = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
-  console.log(req);
 
   if (!token) {
     logger.error("Unauthorized. No token provided", 401);
