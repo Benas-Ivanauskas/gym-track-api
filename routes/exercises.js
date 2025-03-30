@@ -4,11 +4,14 @@ import {
   getCategories,
   getCurrentExercise,
   getExercises,
+  getFromQueryCategories,
 } from "../controllers/excersisesController.js";
 
 const router = Router();
 
 router.get("/categories", getCategories);
+
+router.get("/categories/exercises", getFromQueryCategories);
 
 router.get("/categories/:categoryId/exercises", getExercises);
 

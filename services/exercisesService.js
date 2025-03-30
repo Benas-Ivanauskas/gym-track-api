@@ -31,3 +31,22 @@ export const createNewWorkout = (categoryName, exerciseName, userId, sets) => {
     },
   });
 };
+
+export const getExercisesByCategories = async (categories) => {
+  const categoryRecords = await prisma.category.findMany({
+    where: { name: { in: categories } },
+    select: { id: true, name: true },
+  });
+
+  if (categoryRecords.length === 0) {
+    return [];
+  }
+
+  const categoryIds = categoryRecords.map((category) => category.id);
+
+  return prisma.exercise.findMany({
+    where: {
+      categoryId: { in: categoryIds },
+    },
+  });
+};

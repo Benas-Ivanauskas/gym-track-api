@@ -1,11 +1,10 @@
 import logger from "../config/logger.js";
-import ErrorHandler from "../errors/error.js";
-import prisma from "../prisma/prismaClient.js";
 import {
   createNewWorkout,
   getListCategories,
   getListExercises,
   getExercise,
+  getExercisesByCategories,
 } from "../services/exercisesService.js";
 import { isExerciseExists } from "../utils/exerciseHelpers.js";
 
@@ -83,6 +82,32 @@ export const createWorkout = async (req, res, next) => {
         newWorkout,
       },
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getFromQueryCategories = async (req, res, next) => {
+  try {
+    const { categories, weekDay } = req.query;
+    if (!categories) {
+      logger.error("Categories are required", 400);
+      throw new ErrorHandler(400, "Categories are required");
+    }
+    const categoriesArr = categories.split(",");
+    const exercises = await getExercisesByCategories(categoriesArr);
+
+    res.status(200).json({
+      data: {
+        exercises,
+        weekDay,
+      },
+    });
+    logger.info(
+      `Successfully fetched weekDay (${weekDay}) all exercises by categories ${categories} - ${JSON.stringify(
+        exercises
+      )}`
+    );
   } catch (err) {
     next(err);
   }
